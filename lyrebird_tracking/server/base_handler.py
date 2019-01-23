@@ -54,15 +54,17 @@ def init_data():
             result_dict.update({'groupid': item.get('groupid')})
         if item.get('groupname'):
             result_dict.update({'groupname': item.get('groupname')})
+            if not item.get('groupname') in app_context.select_groups:
+                app_context.select_groups.append(item.get('groupname'))
 
         target_dict = {
             'asserts': item.get('asserts'),
             'content': None, 'selector': item.get('selector'),
             'source': None, 'url': None}
         target_dict.update(result_dict)
-
         app_context.result_list.append(result_dict)
         app_context.content.append(target_dict)
+
 
 
 def copy_file(target_path):

@@ -120,7 +120,8 @@ module.exports = {
       // filter出name
       let showdata = [];
       if (this.filter_rules.length == 0) {
-        showdata = this.trackingdata;
+        //没有任何选中filter，不展示数据
+        showdata = []
       } else {
         for (let i = 0; i < this.filter_rules.length; i++) {
           let filter_rule = this.filter_rules[i];
