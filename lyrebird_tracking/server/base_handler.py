@@ -52,10 +52,16 @@ def init_data():
         # 加入分组信息，用于前端筛选
         if item.get('groupid'):
             result_dict.update({'groupid': item.get('groupid')})
+
         if item.get('groupname'):
             result_dict.update({'groupname': item.get('groupname')})
             if not item.get('groupname') in app_context.select_groups:
                 app_context.select_groups.append(item.get('groupname'))
+        else:
+            item.update({'groupname': 'unnamed'})
+            result_dict.update({'groupname': 'unnamed'})
+            if not 'unnamed' in app_context.select_groups:
+                app_context.select_groups.append('unnamed')
 
         target_dict = {
             'asserts': item.get('asserts'),

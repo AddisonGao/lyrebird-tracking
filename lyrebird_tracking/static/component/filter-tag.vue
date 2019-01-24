@@ -4,7 +4,7 @@
         <Tag >Case filters : {{grouplist.length}} conditions </Tag>
         <i-button icon="ios-create-outline" type="dashed" size="small" @click="editTag"> Edit </i-button>
         <modal v-model="showModal" title="Edit Tag" @on-ok="changeOk" height="auto" :mask="false" width="70vh">
-          <i-select class="custom-select" v-model="changeGroupCache" multiple filterable clearable style="width:260px,margin:auto;" @on-change="activatedDataChange">
+          <i-select filterable class="custom-select" v-model="changeGroupCache" multiple style="width:260px,margin:auto;" @on-change="activatedDataChange">
             <option-group label="Group">
               <i-option v-for="item in allGroup" :key="item" :value="item">{{item}}</i-option>
             </option-group>
@@ -49,7 +49,7 @@ module.exports = {
             }
           }
           // 初始化，展示list赋值展示全部，赋值给AllGroup
-          this.allGroup = [].concat(group);
+          this.allGroup = group;
         },
         error => {
           console.log("load base failed!", error);
