@@ -1,7 +1,7 @@
 <template>
   <div class="tracking-list">
-    <filter-tag @filterchange="filterList" class="filter-bar"></filter-tag>
-    <i-table highlight-row  :columns="columns" :data="displayedData" @on-row-click="handleRowSelect" class="data-table"></i-table>
+    <filter-tag class="filter-bar"></filter-tag>
+    <i-table v-if="displayedData" highlight-row :columns="columns" :data="displayedData" @on-row-click="handleRowSelect" class="data-table"></i-table>
   </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
   components: {
     FilterTag
   },
-  props: ["trackingdata"],
+  props: [],
   data: function() {
     return {
       filter_rules: [],
@@ -66,27 +66,28 @@ export default {
   methods: {
     handleRowSelect: function(row, index) {
       this.$store.dispatch('loadTrackingDetail', row.id);
-    },
-    filterList: function(grouplist) {
-      this.filter_rules = grouplist;
     }
   },
   computed: {
-    // trackingdata(){
-    //   return this.$store.state.trackingList;
-    // },
-    displayedData: function() {
-      // filter出name
+    allTrackingData() {
+      return this.$store.state.trackingList;
+    },
+    groupList() {
+      return this.$store.state.groupList;
+    },
+    displayedData() {
+      const trackingList = this.allTrackingData;
+      const groupList = this.groupList;
       let showdata = [];
-      for (let i = 0; i < this.filter_rules.length; i++) {
-        let filter_rule = this.filter_rules[i];
-        let filtercells = this.trackingdata.filter(function(elem) {
+      for (let i = 0; i < groupList.length; i++) {
+        let filter_rule = groupList[i];
+        let filtercells = trackingList.filter(function(elem) {
           return elem.groupname == filter_rule;
         });
         showdata = showdata.concat(filtercells);
-      }  
+      }
       return showdata;
-    }
+    },
   }
 }
 </script>

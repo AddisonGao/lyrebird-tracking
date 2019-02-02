@@ -1,6 +1,5 @@
 <template>
     <div v-if="allGroup.length!=0">
-        <!-- <Tag v-for="item in grouplist" :key="item" :name="item" closable @on-close="handleClose">{{item}}</Tag> -->
         <Tag >Case filters : {{grouplist.length}} conditions </Tag>
         <i-button icon="ios-create-outline" type="dashed" size="small" @click="editTag"> Edit </i-button>
         <modal v-model="showModal" title="Edit Tag" @on-ok="changeOk" height="auto" :mask="false" width="70vh">
@@ -59,27 +58,13 @@ export default {
         filterdata = response.data;
         this.grouplist = filterdata;
         this.changeGroupCache = filterdata;
-        this.$emit("filterchange", this.grouplist);
+        this.$store.dispatch('loadGroupList', this.grouplist);
       })
       .catch(error=>console.log(error))
-    },
-    handleClose: function(event, name) {
-      let index = this.grouplist.indexOf(name);
-      if (index > -1) {
-        this.grouplist.splice(index, 1);
-      }
-      this.$emit("filterchange", this.grouplist);
     },
     changeOk: function() {
       this.grouplist = this.changeGroupCache;
-      this.$emit("filterchange", this.grouplist);
-      
-      api.createGroupList(this.grouplist)
-      .then(response=>{
-        console.log('change selected group ok');
-      })
-      .catch(error=>console.log(error))
-      
+      this.$store.dispatch('loadGroupList', this.grouplist);
       this.showModal = false;
     },
     activatedDataChange: function(val) {

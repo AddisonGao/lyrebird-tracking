@@ -6,7 +6,7 @@
         <div class="divider"></div>
         <Row>
             <Col span="12">
-                <tracking-list :trackingdata="allTrackingData" class="tracking-left"></tracking-list>
+                <tracking-list class="tracking-left"></tracking-list>
             </Col>
             <div class="split" v-if="currentTracking"></div>
             <Col span="12" v-if="currentTracking">
@@ -35,17 +35,12 @@ export default {
   },
   data: function () {
     return {
-      allTrackingData: [],
-      showedTrackingData: []
     }
   },
   mounted: function() {
-    // this.$store.dispatch('loadTrackingList');
-    this.loadTrackingList();
-    const loadTrackingList = this.loadTrackingList;
-    trackingIO.on("update", function(msg) {
-      loadTrackingList();
-      //this.$store.dispatch('loadTrackingList');
+    this.$store.dispatch('loadTrackingList');
+    trackingIO.on("update", msg => {
+      this.$store.dispatch('loadTrackingList');
       console.log("update");
     });
   },
@@ -55,13 +50,6 @@ export default {
     }
   },
   methods: {
-    loadTrackingList: function() {
-      api.loadTrackingList()
-      .then(response=>{
-        this.allTrackingData = response.data.result;
-      })
-      .catch(error=>console.log(error))
-    }
   }
 }
 

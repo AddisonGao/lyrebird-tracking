@@ -20,6 +20,7 @@ export default {
   methods: {
     clearResult: function() {
       api.clearResult().then(response=>{
+        this.$store.dispatch('loadTrackingList');
         console.log('Clear statistics list!');
         this.$Notice.success({
             title: "Clear Success"

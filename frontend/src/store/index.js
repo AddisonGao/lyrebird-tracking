@@ -7,7 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     focusedTrackingDetail: null,
-    trackingList: null
+    trackingList: [],
+    groupList: []
   },
   mutations: {
     setFocusedTrackingDetail(state, trackingDetail){
@@ -15,6 +16,9 @@ export default new Vuex.Store({
     },
     setTrackingList(state, trackingList){
       state.trackingList = trackingList
+    },
+    setGroupList(state, groupList){
+      state.groupList= groupList;
     }
   },
   actions: {
@@ -29,6 +33,14 @@ export default new Vuex.Store({
       .then(response=>{
         commit('setTrackingList', response.data.result)
       })
+    },
+    loadGroupList({commit}, grouplist){
+      api.createGroupList(grouplist)
+      .then(response=>{
+        console.log('change selected group ok');
+        commit('setGroupList', grouplist)
+      })
+      .catch(error=>console.log(error))
     }
   }
 })
