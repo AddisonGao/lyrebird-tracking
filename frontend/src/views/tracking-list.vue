@@ -1,14 +1,14 @@
 <template>
   <div class="tracking-list">
-      <filter-tag @filterchange="filterList" class="filter-bar"></filter-tag>
-      <!-- <div style="max-height: 550px; overflow-y: auto;"> -->
-        <i-table highlight-row  :columns="columns" :data="displayedData" @on-row-click="handleRowSelect" class="data-table"></i-table>
-      <!-- </div> -->
+    <filter-tag @filterchange="filterList" class="filter-bar"></filter-tag>
+    <i-table highlight-row  :columns="columns" :data="displayedData" @on-row-click="handleRowSelect" class="data-table"></i-table>
   </div>
 </template>
 
 <script>
 import FilterTag from '@/views/filter-tag.vue'
+import * as api from '@/api'
+
 export default {
   name : 'TrackingList',
   components: {
@@ -95,17 +95,15 @@ export default {
       this.$emit("detail", row, index);
       this.viewDetail(row.id);
       this.$emit("content", this.selectDetail);
+      this.$store.dispatch('loadTrackingDetail', row.id);
     },
     viewDetail: function(id) {
-      this.$http.get("/ui/plugin/tracking/content/" + id).then(
-        response => {
-          this.selectDetail = response.data;
-          this.$emit("content", this.selectDetail);
-        },
-        error => {
-          console.log("load tracking list failed!", error);
-        }
-      );
+      api.viewDetail(id)
+      .then(response=>{
+        this.selectDetail = response.data;
+        this.$emit("content", this.selectDetail);
+      })
+      .catch(error=>console.log(error))
     },
     filterList: function(grouplist) {
       this.filter_rules = grouplist;

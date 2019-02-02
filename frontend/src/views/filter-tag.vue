@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import * as api from '@/api'
+
 export default {
   mounted: function() {
     this.loadTagList();
@@ -34,37 +36,32 @@ export default {
   methods: {
     loadTagList: function() {
       let filterdata = null;
-      this.$http.get("/ui/plugin/tracking/base").then(
-        response => {
-          filterdata = response.data;
-          let group = [];
-          for (let i = 0; i < filterdata.cases.length; i++) {
-            let name = filterdata.cases[i].groupname;
-            if (typeof name != "undefined") {
-              // 如果grouplist里面不包含当前groupname返回-1，包含返回index值
-              if (group == 0 || group.indexOf(name) == -1) {
-                group.push(name);
-              }
+      api.loadTrackingBase()
+      .then(response=>{
+        filterdata = response.data;
+        let group = [];
+        for (let i = 0; i < filterdata.cases.length; i++) {
+          let name = filterdata.cases[i].groupname;
+          if (typeof name != "undefined") {
+            // 如果grouplist里面不包含当前groupname返回-1，包含返回index值
+            if (group == 0 || group.indexOf(name) == -1) {
+              group.push(name);
             }
           }
-          // 初始化，展示list赋值展示全部，赋值给AllGroup
-          this.allGroup = group;
-        },
-        error => {
-          console.log("load base failed!", error);
         }
-      );
-      this.$http.get("/ui/plugin/tracking/group").then(
-        response => {
-          filterdata = response.data;
-          this.grouplist = filterdata;
-          this.changeGroupCache = filterdata;
-          this.$emit("filterchange", this.grouplist);
-        },
-        error => {
-          console.log("load filter group failed!", error);
-        }
-      );
+        // 初始化，展示list赋值展示全部，赋值给AllGroup
+        this.allGroup = group;
+      })
+      .catch(error=>console.log(error))
+
+      api.loadGroupList()
+      .then(response=> {
+        filterdata = response.data;
+        this.grouplist = filterdata;
+        this.changeGroupCache = filterdata;
+        this.$emit("filterchange", this.grouplist);
+      })
+      .catch(error=>console.log(error))
     },
     handleClose: function(event, name) {
       let index = this.grouplist.indexOf(name);
@@ -76,18 +73,13 @@ export default {
     changeOk: function() {
       this.grouplist = this.changeGroupCache;
       this.$emit("filterchange", this.grouplist);
-      this.$http.post('/ui/plugin/tracking/select',
-        {
-          group: this.grouplist
-        }
-      ).then(resp=>{
-          if(resp.data.code===1000){
-            console.log('change selected group ok');
-          }else{
-            console.log('change selected group failed');
-          }
-        }
-      )
+      
+      api.createGroupList(this.grouplist)
+      .then(response=>{
+        console.log('change selected group ok');
+      })
+      .catch(error=>console.log(error))
+      
       this.showModal = false;
     },
     activatedDataChange: function(val) {

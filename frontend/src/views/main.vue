@@ -21,6 +21,7 @@ import Banner from '@/views/banner.vue'
 import TrackingList from '@/views/tracking-list.vue'
 import TrackingDetail from '@/views/tracking-detail.vue'
 import io from 'socket.io-client'
+import * as api from '@/api' 
 
 //websocket namespace /tracking-plugin
 let trackingIO = io("/tracking-plugin");
@@ -61,20 +62,11 @@ export default {
       this.codedetail = data.content;
     },
     loadTrackingList: function() {
-      this.$http.get("/ui/plugin/tracking/result").then(
-        response => {
-          this.allTrackingData = response.data.result;
-        },
-        error => {
-          console.log("load tracking list failed!", error);
-        }
-      );
-    },
-    loadTrackingBase: function() {
-      this.$http.get("/ui/plugin/tracking/init").then(response => {
-        console.log("init msg successed");
-        this.loadTrackingList();
-      });
+      api.loadTrackingList()
+      .then(response=>{
+        this.allTrackingData = response.data.result;
+      })
+      .catch(error=>console.log(error))
     }
   }
 }
