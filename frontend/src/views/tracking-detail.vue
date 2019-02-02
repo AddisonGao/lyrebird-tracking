@@ -1,7 +1,7 @@
 <template>
   <div class="tracking-detail">
     <font style="font-size: 16px; font-weight: bold; color: rgb(70, 76, 91);" class="detail-title">Detail</font>
-    <Collapse>
+    <Collapse v-if="currentcontent">
       <Panel v-for="item in currentcontent.asserts" :key="item.field">
         <font color="LimeGreen" v-if="item.flag===true">Check field - {{item.field}} </font>
         <font color="CornflowerBlue" v-else-if="item.flag===2||typeof(item.flag) == 'undefined'">Check field - {{item.field}} </font>
@@ -36,8 +36,15 @@ import * as monaco from 'monaco-editor'
 
 export default {
   name: 'TrackingDetail',
-  props: ["trackingdetail", "trackingindex", "currentcontent", "codedetail"],
+  props: [],
   computed: {
+    codedetail () {
+      const detail = this.$store.state.focusedTrackingDetail
+      return detail && detail.content
+    },
+    currentcontent() {
+      return this.$store.state.focusedTrackingDetail
+    }
   },
   components: {
     Prism

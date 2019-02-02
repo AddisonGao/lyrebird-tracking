@@ -6,11 +6,11 @@
         <div class="divider"></div>
         <Row>
             <Col span="12">
-                <tracking-list :trackingdata="allTrackingData"  @detail="getTrackingIndex" @content="getCurrentContent" class="tracking-left"></tracking-list>
+                <tracking-list :trackingdata="allTrackingData" class="tracking-left"></tracking-list>
             </Col>
             <div class="split" v-if="currentTracking"></div>
             <Col span="12" v-if="currentTracking">
-                <tracking-detail :trackingdetail="currentTracking" :trackingindex="currentIndex" :currentcontent="currentContent" :codedetail="codedetail" class="tracking-right"></tracking-detail>
+                <tracking-detail class="tracking-right"></tracking-detail>
             </Col>
         </Row>
     </div>
@@ -36,31 +36,25 @@ export default {
   data: function () {
     return {
       allTrackingData: [],
-      showedTrackingData: [],
-      currentIndex: null,
-      currentTracking: null,
-      targetContext: null,
-      currentContent: {},
-      codedetail: null
+      showedTrackingData: []
     }
   },
   mounted: function() {
+    // this.$store.dispatch('loadTrackingList');
     this.loadTrackingList();
     const loadTrackingList = this.loadTrackingList;
     trackingIO.on("update", function(msg) {
       loadTrackingList();
+      //this.$store.dispatch('loadTrackingList');
       console.log("update");
     });
   },
+  computed: {
+    currentTracking() {
+      return this.$store.state.focusedTrackingDetail
+    }
+  },
   methods: {
-    getTrackingIndex: function(data, index) {
-      this.currentTracking = data;
-      this.currentIndex = index;
-    },
-    getCurrentContent: function(data) {
-      this.currentContent = data;
-      this.codedetail = data.content;
-    },
     loadTrackingList: function() {
       api.loadTrackingList()
       .then(response=>{

@@ -18,7 +18,6 @@ export default {
   data: function() {
     return {
       filter_rules: [],
-      selectDetail: {},
       columns: [
         {
           title: "Case",
@@ -65,63 +64,27 @@ export default {
     };
   },
   methods: {
-    setTrackingName: function(selectedItem) {
-      this.selectedRow = selectedItem;
-      this.$emit("popdata", selectedItem);
-    },
-    setResult: function(item) {
-      if (item.result.toLowerCase() === "pass") {
-        item.result = "FAIL";
-      } else if (item.result.toLowerCase() === "fail") {
-        item.result = "PASS";
-      } else {
-        item.result = "null";
-      }
-    },
-    setResultClass: function(item) {
-      if (item.result.toLowerCase() === "pass") {
-        return "btn-success";
-      } else if (item.result.toLowerCase() === "fail") {
-        return "btn-danger";
-      } else {
-        item.result = "null";
-        return "btn-default";
-      }
-    },
-    classSelected: function(item) {
-      return item === this.selectedRow;
-    },
     handleRowSelect: function(row, index) {
-      this.$emit("detail", row, index);
-      this.viewDetail(row.id);
-      this.$emit("content", this.selectDetail);
       this.$store.dispatch('loadTrackingDetail', row.id);
-    },
-    viewDetail: function(id) {
-      api.viewDetail(id)
-      .then(response=>{
-        this.selectDetail = response.data;
-        this.$emit("content", this.selectDetail);
-      })
-      .catch(error=>console.log(error))
     },
     filterList: function(grouplist) {
       this.filter_rules = grouplist;
     }
   },
   computed: {
+    // trackingdata(){
+    //   return this.$store.state.trackingList;
+    // },
     displayedData: function() {
       // filter出name
       let showdata = [];
-      
       for (let i = 0; i < this.filter_rules.length; i++) {
         let filter_rule = this.filter_rules[i];
         let filtercells = this.trackingdata.filter(function(elem) {
           return elem.groupname == filter_rule;
         });
         showdata = showdata.concat(filtercells);
-      }
-      
+      }  
       return showdata;
     }
   }
